@@ -97,7 +97,7 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="/admin/assets/images/users/1.jpg" alt="user" class="rounded-circle" width="31"></a>
                             <div class="dropdown-menu dropdown-menu-right user-dd animated">
-                                <a class="dropdown-item" href="javascript:void(0)"><i class="ti-settings m-r-5 m-l-5"></i> Ganti Password</a>
+                                <a class="dropdown-item" href="/admin/gantiPassword"><i class="ti-settings m-r-5 m-l-5"></i> Ganti Password</a>
                                 <a class="dropdown-item" href="/admin/logout"><i class="fa fa-power-off m-r-5 m-l-5"></i> Logout</a>
                             </div>
                         </li>
@@ -122,7 +122,7 @@
                     <ul id="sidebarnav" class="p-t-30">
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/dashboard" aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span class="hide-menu">Dashboard</span></a></li>
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/kelolaToko" aria-expanded="false"><i class="mdi mdi-store"></i><span class="hide-menu">Kelola Toko</span></a></li>
-                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="widgets.html" aria-expanded="false"><i class="fas fa-clipboard-list"></i><span class="hide-menu">Kelola Kategori Produk</span></a></li>
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="/admin/kelolaKategoriProduk" aria-expanded="false"><i class="fas fa-clipboard-list"></i><span class="hide-menu">Kelola Kategori Produk</span></a></li>
                     </ul>
                 </nav>
                 <!-- End Sidebar navigation -->

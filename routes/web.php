@@ -33,3 +33,15 @@ Route::post('/admin/kelolaToko/hapus', 'AdminController@hapusToko');
 
 Route::get('/admin/kelolaToko/qr-code/{nama_toko}', 'AdminController@qrToko');
 
+Route::get('/admin/kelolaKategoriProduk', 'AdminController@kategoriProduk');
+
+Route::post('/admin/kelolaKategoriProduk/tambah', 'AdminController@tambahKategoriProduk');
+
+Route::post('/admin/kelolaKategoriProduk/ubah', 'AdminController@ubahKategoriProduk');
+
+Route::post('/admin/kelolaKategoriProduk/hapus', 'AdminController@hapusKategoriProduk');
+
+Route::get('/admin/gantiPassword', 'AdminController@gantiPassword');
+
+Route::post('/admin/gantiPassword/proses', 'AdminController@gantiPasswordProses');
+

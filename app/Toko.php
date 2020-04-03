@@ -14,6 +14,11 @@ class Toko extends Model
 
     public $incrementing = false;
 
+    public function setPasswordAttribute($value)
+    {
+      $this->attributes['password'] = bcrypt($value);
+    }
+
     public function produk() {
         return $this->hasMany('App\Produk', 'id_toko');
     }
