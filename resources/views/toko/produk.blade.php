@@ -1,6 +1,6 @@
-@extends('admin/master/masterAdmin')
+@extends('toko/master/masterToko')
 
-@section('title', 'Kelola Toko')
+@section('title', 'Produk')
 
 @section('content')
             <!-- ============================================================== -->
@@ -9,11 +9,11 @@
             <div class="page-breadcrumb">
                 <div class="row">
                     <div class="col-12 d-flex no-block align-items-center">
-                        <h4 class="page-title">Kelola Toko</h4>
+                        <h4 class="page-title">Produk</h4>
                         <div class="ml-auto text-right">
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="">Kelola Toko</a></li>
+                                    <li class="breadcrumb-item"><a href="/toko/produk">Produk</a></li>
                                 </ol>
                             </nav>
                         </div>
@@ -36,69 +36,74 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="col-lg-3 col-md-6">
-                                    <button type="button" class="btn btn-info mb-1" data-toggle="modal" data-target="#tambahToko"><i class="fa fa-plus-square"></i>
-                                    Tambah Toko
+                                    <button type="button" class="btn btn-info mb-1" data-toggle="modal" data-target="#tambahProduk"><i class="fa fa-plus-square"></i>
+                                    Tambah Produk
                                     </button>
                                 </div>
 
-                                <!-- Modal Tambah Toko -->
+                                <!-- Modal Tambah Produk -->
 
-                                <div class="modal fade" id="tambahToko" tabindex="-1" role="dialog" aria-labelledby="smallModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="tambahProduk" tabindex="-1" role="dialog" aria-labelledby="smallModalLabel" aria-hidden="true">
                                     <div class="modal-dialog modal-lg" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h3 class="modal-title" id="mediumModalLabel"><strong>Tambah Toko</strong></h3>
+                                                <h3 class="modal-title" id="mediumModalLabel"><strong>Tambah Produk</strong></h3>
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <form action="/admin/kelolaToko/tambah" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                                <form action="/toko/produk/tambah" method="post" enctype="multipart/form-data" class="form-horizontal">
 
                                                     {{ csrf_field()}}
 
                                                     <div class="row form-group" hidden>
                                                         <div class="col col-md-3">
-                                                            <label for="number-input" class=" form-control-label">ID Toko</label>
+                                                            <label for="number-input" class=" form-control-label">ID Produk</label>
                                                         </div>
                                                         <div class="col-12 col-md-9">
-                                                        <input type="text" id="id_toko" name="id_toko" class="form-control" value="{{str_random(20)}}" readonly>
+                                                        <input type="text" id="id_produk" name="id_produk" class="form-control" value="{{uniqid("PROD-", false)}}" readonly>
                                                         </div>
                                                     </div>
 
                                                     <div class="row form-group">
                                                         <div class="col col-md-3">
-                                                            <label for="text-input" class=" form-control-label">Nama Toko</label>
+                                                            <label for="text-input" class=" form-control-label">Nama Produk</label>
                                                         </div>
                                                         <div class="col-12 col-md-9">
-                                                            <input type="text" id="nama_toko" name="nama_toko" placeholder="Masukkan nama toko" class="form-control" required>
+                                                            <input type="text" id="nama_produk" name="nama_produk" placeholder="Masukkan nama produk" class="form-control" required>
                                                         </div>
                                                     </div>
 
                                                     <div class="row form-group">
                                                         <div class="col col-md-3">
-                                                            <label for="text-input" class=" form-control-label">Nama Pemilik</label>
+                                                            <label for="text-input" class=" form-control-label">Kategori Produk</label>
                                                         </div>
                                                         <div class="col-12 col-md-9">
-                                                            <input type="text" id="nama_pemilik" name="nama_pemilik" placeholder="Masukkan nama pemilik" class="form-control" required>
+                                                            <select class="form-control" id="id_kategori_produk" name="id_kategori_produk" style="width:100%" required>
+                                                                <option>--- Pilih Kategori Produk ---</option>
+                                                                @foreach ($kategori as $kat)
+                                                                <option value="{{$kat->id_kategori_produk}}">{{$kat->kategori}}</option>
+                                                                @endforeach
+                                                            </select>
                                                         </div>
                                                     </div>
 
                                                     <div class="row form-group">
                                                         <div class="col col-md-3">
-                                                            <label for="text-input" class=" form-control-label">Alamat Toko</label>
+                                                            <label for="text-input" class=" form-control-label">Harga</label>
                                                         </div>
                                                         <div class="col-12 col-md-9">
-                                                            <textarea id="alamat" name="alamat" placeholder="Masukkan alamat toko lengkap" class="form-control" required></textarea>
+                                                            <input type="number" id="harga" name="harga" placeholder="Masukkan harga produk" class="form-control" required>
                                                         </div>
                                                     </div>
 
                                                     <div class="row form-group">
                                                         <div class="col col-md-3">
-                                                            <label for="text-input" class=" form-control-label">Email</label>
+                                                            <label for="text-input" class=" form-control-label">Stok</label>
                                                         </div>
                                                         <div class="col-12 col-md-9">
-                                                            <input type="text" id="email" name="email" placeholder="Masukkan email" class="form-control" required>
+                                                            <input type="number" id="stok" name="stok" placeholder="Masukkan stok produk" class="form-control" required>
                                                         </div>
                                                     </div>
 
@@ -112,8 +117,9 @@
                                     </div>
                                 </div>
 
-                                <!-- Modal Ubah Toko -->
-                                <div class="modal fade" id="ubahToko" tabindex="-1" role="dialog" aria-labelledby="smallModalLabel" aria-hidden="true">
+                                <!-- Modal Ubah Produk -->
+
+                                <div class="modal fade" id="ubahProduk" tabindex="-1" role="dialog" aria-labelledby="smallModalLabel" aria-hidden="true">
                                     <div class="modal-dialog modal-lg" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -123,52 +129,57 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <form action="/admin/kelolaToko/ubah" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                                <form action="/toko/produk/ubah" method="post" enctype="multipart/form-data" class="form-horizontal">
 
                                                     {{ csrf_field()}}
 
                                                     <div class="row form-group" hidden>
                                                         <div class="col col-md-3">
-                                                            <label for="number-input" class=" form-control-label">ID Toko</label>
+                                                            <label for="number-input" class=" form-control-label">ID Produk</label>
                                                         </div>
                                                         <div class="col-12 col-md-9">
-                                                        <input type="text" id="id_toko" name="id_toko" class="form-control" value="{{str_random(20)}}" readonly>
+                                                        <input type="text" id="id_produk" name="id_produk" class="form-control" readonly>
                                                         </div>
                                                     </div>
 
                                                     <div class="row form-group">
                                                         <div class="col col-md-3">
-                                                            <label for="text-input" class=" form-control-label">Nama Toko</label>
+                                                            <label for="text-input" class=" form-control-label">Nama Produk</label>
                                                         </div>
                                                         <div class="col-12 col-md-9">
-                                                            <input type="text" id="nama_toko" name="nama_toko" placeholder="Masukkan nama toko" class="form-control" required>
+                                                            <input type="text" id="nama_produk" name="nama_produk" placeholder="Masukkan nama produk" class="form-control" required>
                                                         </div>
                                                     </div>
 
                                                     <div class="row form-group">
                                                         <div class="col col-md-3">
-                                                            <label for="text-input" class=" form-control-label">Nama Pemilik</label>
+                                                            <label for="text-input" class=" form-control-label">Kategori Produk</label>
                                                         </div>
                                                         <div class="col-12 col-md-9">
-                                                            <input type="text" id="nama_pemilik" name="nama_pemilik" placeholder="Masukkan nama pemilik" class="form-control" required>
+                                                            <select class="form-control" id="id_kategori_produk" name="id_kategori_produk" style="width:100%" required>
+                                                                <option>--- Pilih Kategori Produk ---</option>
+                                                                @foreach ($kategori as $kat)
+                                                                <option value="{{$kat->id_kategori_produk}}">{{$kat->kategori}}</option>
+                                                                @endforeach
+                                                            </select>
                                                         </div>
                                                     </div>
 
                                                     <div class="row form-group">
                                                         <div class="col col-md-3">
-                                                            <label for="text-input" class=" form-control-label">Alamat Toko</label>
+                                                            <label for="text-input" class=" form-control-label">Harga</label>
                                                         </div>
                                                         <div class="col-12 col-md-9">
-                                                            <textarea id="alamat" name="alamat" placeholder="Masukkan alamat toko lengkap" class="form-control" required></textarea>
+                                                            <input type="number" id="harga" name="harga" placeholder="Masukkan harga produk" class="form-control" required>
                                                         </div>
                                                     </div>
 
                                                     <div class="row form-group">
                                                         <div class="col col-md-3">
-                                                            <label for="text-input" class=" form-control-label">Email</label>
+                                                            <label for="text-input" class=" form-control-label">Stok</label>
                                                         </div>
                                                         <div class="col-12 col-md-9">
-                                                            <input type="text" id="email" name="email" placeholder="Masukkan email" class="form-control" required>
+                                                            <input type="number" id="stok" name="stok" placeholder="Masukkan stok produk" class="form-control" required>
                                                         </div>
                                                     </div>
 
@@ -182,9 +193,9 @@
                                     </div>
                                 </div>
 
-                                 <!-- Modal Hapus Toko -->
+                                 <!-- Modal Hapus Produk -->
 
-                                 <div class="modal fade" id="hapusToko" tabindex="-1" role="dialog" aria-labelledby="smallModalLabel" aria-hidden="true">
+                                 <div class="modal fade" id="hapusProduk" tabindex="-1" role="dialog" aria-labelledby="smallModalLabel" aria-hidden="true">
                                     <div class="modal-dialog modal-md" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -195,11 +206,11 @@
                                             </div>
                                             <div class="modal-body">
                                                 <h5>Apakah anda yakin?</h5>
-                                                <form action="/admin/kelolaToko/hapus" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                                <form action="/toko/produk/hapus" method="post" enctype="multipart/form-data" class="form-horizontal">
                                                     {{ csrf_field()}}
                                                     <div class="row form-group" hidden>
                                                         <div class="col-12 col-md-9">
-                                                            <input type="text" id="id_toko" name="id_toko" class="form-control" readonly required>
+                                                            <input type="text" id="id_produk" name="id_produk" class="form-control" readonly required>
                                                         </div>
                                                     </div>
 
@@ -220,44 +231,45 @@
                                         <thead>
                                             <tr>
                                                 <th>No.</th>
-                                                <th>Nama Toko</th>
-                                                <th>Nama Pemilik</th>
-                                                <th>Email</th>
-                                                <th>Alamat</th>
-                                                <th>QR Toko</th>
+                                                <th>Nama Produk</th>
+                                                <th>Kategori</th>
+                                                <th>Harga</th>
+                                                <th>Stok</th>
+                                                <th>QR Produk</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($toko as $key => $tk)
+                                            @foreach($produk as $key => $prod)
                                             <tr>
                                                 <td>{{++$key}}</td>
-                                                <td>{{$tk->nama_toko}}</td>
-                                                <td>{{$tk->nama_pemilik}}</td>
-                                                <td>{{$tk->email}}</td>
-                                                <td>{{$tk->alamat}}</td>
+                                                <td>{{$prod->nama_produk}}</td>
+                                                <td>{{$prod->kategoriProduk->kategori}}</td>
+                                                <td>{{$prod->harga}}</td>
+                                                <td>{{$prod->stok}}</td>
                                                 <td>
-                                                    <a href="/admin/kelolaToko/qr-code/{{$tk->nama_toko}}" target="_blank">
+                                                    <a href="/toko/produk/qr-code/{{$prod->id_produk}}">
                                                         <i class="fa fa-qrcode"></i>&nbsp;
                                                     </a>
                                                 </td>
                                                 <td>
                                                     <button type="button" class="btn btn-success btn-sm"
-                                                        data-target="#ubahToko"
+                                                        data-target="#ubahProduk"
                                                         data-toggle="modal"
-                                                        data-id_toko ="{{$tk->id_toko}}"
-                                                        data-nama_toko ="{{$tk->nama_toko}}"
-                                                        data-nama_pemilik ="{{$tk->nama_pemilik}}"
-                                                        data-alamat ="{{$tk->alamat}}"
-                                                        data-email ="{{$tk->email}}"
+                                                        data-id_produk ="{{$prod->id_produk}}"
+                                                        data-nama_produk ="{{$prod->nama_produk}}"
+                                                        data-id_kategori ="{{$prod->id_kategori_produk}}"
+                                                        data-harga ="{{$prod->harga}}"
+                                                        data-stok ="{{$prod->stok}}"
                                                         >
                                                         <i class="fa fa-edit"></i>&nbsp;
                                                             Ubah
                                                     </button>
                                                     <button type="button" class="btn btn-danger btn-sm"
-                                                        data-target="#hapusToko"
+                                                        data-target="#hapusProduk"
                                                         data-toggle="modal"
-                                                        data-id_toko ="{{$tk->id_toko}}">
+                                                        data-id_produk ="{{$prod->id_produk}}"
+                                                        >
                                                         <i class="fa fa-trash"></i>&nbsp;
                                                             Hapus
                                                     </button>
@@ -287,32 +299,40 @@
     $('#zero_config').DataTable();
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+
+<script>
+    $('.js-example-basic-single').select2({
+        theme: "classic",
+    });
+</script>
+
 <script type="text/javascript">
     $(document).ready(function(){
-        $('#ubahToko').on('show.bs.modal', function (event) {
+        $('#ubahProduk').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
-            var id_toko = button.data('id_toko');
-            var nama_toko = button.data('nama_toko');
-            var nama_pemilik = button.data('nama_pemilik');
-            var alamat = button.data('alamat');
-            var email = button.data('email');
+            var id_produk = button.data('id_produk');
+            var nama_produk = button.data('nama_produk');
+            var id_kategori = button.data('id_kategori');
+            var harga = button.data('harga');
+            var stok = button.data('stok');
             var modal = $(this);
-            modal.find('.modal-body #id_toko').val(id_toko);
-            modal.find('.modal-body #nama_toko').val(nama_toko);
-            modal.find('.modal-body #nama_pemilik').val(nama_pemilik);
-            modal.find('.modal-body #alamat').val(alamat);
-            modal.find('.modal-body #email').val(email);
+            modal.find('.modal-body #id_produk').val(id_produk);
+            modal.find('.modal-body #nama_produk').val(nama_produk);
+            modal.find('.modal-body #id_kategori_produk').val(id_kategori);
+            modal.find('.modal-body #harga').val(harga);
+            modal.find('.modal-body #stok').val(stok);
         });
     });
 </script>
 
 <script type="text/javascript">
     $(document).ready(function(){
-        $('#hapusToko').on('show.bs.modal', function (event) {
+        $('#hapusProduk').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
-            var id_toko = button.data('id_toko');
+            var id_produk = button.data('id_produk');
             var modal = $(this);
-            modal.find('.modal-body #id_toko').val(id_toko);
+            modal.find('.modal-body #id_produk').val(id_produk);
         });
     });
 </script>

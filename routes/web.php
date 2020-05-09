@@ -11,8 +11,8 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/admin', function () {
+    return redirect('/admin/login');
 });
 
 Route::get('/admin/login', 'AdminController@loginIndex');
@@ -45,3 +45,44 @@ Route::get('/admin/gantiPassword', 'AdminController@gantiPassword');
 
 Route::post('/admin/gantiPassword/proses', 'AdminController@gantiPasswordProses');
 
+//Route Toko
+
+Route::get('/toko', function () {
+    return redirect('/toko/login');
+});
+
+Route::get('/toko/login', 'TokoController@loginIndex');
+
+Route::post('/toko/login/proses', 'TokoController@loginProses');
+
+Route::get('/toko/logout', 'TokoController@logOut');
+
+Route::get('/toko/dashboard', 'TokoController@dashboard');
+
+Route::get('/toko/produk', 'ProdukController@produk');
+
+Route::post('/toko/produk/tambah', 'ProdukController@tambahProduk');
+
+Route::post('/toko/produk/ubah', 'ProdukController@ubahProduk');
+
+Route::post('/toko/produk/hapus', 'ProdukController@hapusProduk');
+
+Route::get('/toko/produk/qr-code/{id_produk}', 'ProdukController@qrProduk');
+
+Route::get('/toko/riwayatPelanggan', 'TokoController@riwayatPelanggan');
+
+Route::post('/toko/riwayatPelanggan/hapus', 'TokoController@hapusRiwayatPelanggan');
+
+Route::get('/toko/riwayatTransaksi', 'TokoController@riwayatTransaksi');
+
+Route::post('/toko/riwayatTransaksi/hapus', 'TokoController@hapusRiwayatTransaksi');
+
+//api
+
+Route::post('/api/tambahPelanggan', 'ApiController@tambahPelanggan');
+
+Route::post('/api/loginToko', 'ApiController@loginToko');
+
+Route::post('/api/getRiwayatToko', 'ApiController@riwayatToko');
+
+Route::post('/api/getTransaksi', 'ApiController@getTransaksi');

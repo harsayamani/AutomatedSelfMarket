@@ -17,6 +17,14 @@ class AdminController extends Controller
 {
     public function loginIndex(){
         if(!Session::get('loginAdmin')){
+            $admin = Admin::get()->count();
+            if($admin < 1){
+                $admin = new Admin();
+                $admin->username = "admin";
+                $admin->password = "admin123";
+                $admin->save();
+            }
+
             return view('admin/loginAdmin');
         }else{
             return redirect('/admin/dashboard');
