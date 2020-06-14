@@ -28,4 +28,6 @@
     <script src="/admin/assets/extra-libs/multicheck/jquery.multicheck.js"></script>
     <script src="/admin/assets/extra-libs/DataTables/datatables.min.js"></script>
 <!-- custom js -->
+    <script src="https://js.pusher.com/6.0/pusher.min.js"></script>
+
 @stack('script')

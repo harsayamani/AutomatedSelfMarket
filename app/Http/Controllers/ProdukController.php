@@ -80,7 +80,7 @@ class ProdukController extends Controller
     }
 
     public function qrProduk($id_produk){
-        if(!Session::get('loginAdmin')){
+        if(!Session::get('loginToko')){
             return redirect('/admin/login')->with('alert-danger', 'Anda harus login terlebih dahulu!');
         }else{
             $qr = QrCode::format('png')

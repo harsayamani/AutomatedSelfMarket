@@ -32,7 +32,7 @@ class TokoController extends Controller
         try{
             if($toko){
                 if(Hash::check($password, $toko->password)){
-                    Session::put('loginToko', true);
+                    Session::put('loginToko', Hash::make($toko->id_toko));
                     Session::put('namaToko', $toko->nama_toko);
                     Session::put('idToko', $toko->id_toko);
                     return redirect('/toko/dashboard')->with('alert-success', 'Anda berhasil login!');
@@ -106,5 +106,48 @@ class TokoController extends Controller
             $riwayat->delete($riwayat);
             return redirect('/toko/riwayatPelanggan')->with('alert-success', 'Riwayat sudah dihapus!');;
         }
+    }
+
+    public function gantiPasswordIndex(){
+        if(!Session::get('loginToko')){
+            return redirect('/toko/login')->with('alert-danger', 'Anda harus login terlebih dahulu!');
+        }else{
+            return view('toko/gantiPassword');
+        }
+    }
+
+    public function gantiPasswordProses(Request $request){
+        if(!Session::get('loginToko')){
+            return redirect('/toko/login')->with('alert-danger', 'Anda harus login terlebih dahulu!');
+        }else{
+            $pass_lama = $request->pass_lama;
+            $pass_baru = $request->pass_baru;
+            $pass_konf = $request->pass_konf;
+
+            $current_pass = Toko::where('id_toko', Session::get('idToko'))->value('password');
+
+            if(Hash::check($pass_lama, $current_pass)){
+                if($pass_baru==$pass_konf){
+                    $pass = Toko::findOrFail(Session::get('idToko'));
+                    $pass->password = $pass_baru;
+                    $pass->save();
+                    return redirect('/toko/dashboard')->with('alert-success', 'Password telah diganti!');;
+                }else{
+                    return redirect('/toko/gantiPassword/'.Session::get('idToko').'')->with('alert-danger', 'Konfirmasi password tidak sama!');;
+                }
+            }else{
+                return redirect('/toko/gantiPassword/'.Session::get('idToko').'')->with('alert-danger', 'Password lama salah!');;
+            }
+        }
+    }
+
+    public function ajaxKeranjang(Request $request){
+        $keranjang = Keranjang::where('id_keranjang', $request->id)->get();
+        $nama_produk = Produk::where('id_produk', Keranjang::where('id_keranjang', $request->id)->value('id_produk'))->value('nama_produk');
+
+        return response()->json([
+            'keranjang' => $keranjang,
+            'nama_produk' => $nama_produk,
+        ], 200);
     }
 }

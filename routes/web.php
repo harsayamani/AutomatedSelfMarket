@@ -77,6 +77,13 @@ Route::get('/toko/riwayatTransaksi', 'TokoController@riwayatTransaksi');
 
 Route::post('/toko/riwayatTransaksi/hapus', 'TokoController@hapusRiwayatTransaksi');
 
+Route::get('/toko/gantiPassword/{id_toko}', 'TokoController@gantiPasswordIndex');
+
+Route::post('/toko/gantiPassword/proses', 'TokoController@gantiPasswordProses');
+
+Route::post('/toko/ajax-keranjang', 'TokoController@ajaxKeranjang');
+
+
 //api
 
 Route::post('/api/tambahPelanggan', 'ApiController@tambahPelanggan');
@@ -86,3 +93,13 @@ Route::post('/api/loginToko', 'ApiController@loginToko');
 Route::post('/api/getRiwayatToko', 'ApiController@riwayatToko');
 
 Route::post('/api/getTransaksi', 'ApiController@getTransaksi');
+
+Route::post('/api/getProduk', 'ApiController@getProduk');
+
+Route::post('/api/tambahKeranjang', 'ApiController@tambahKeranjang');
+
+Route::post('/api/transaksi/proses', 'ApiController@prosesTransaksi');
+
+Route::post('/api/transaksi/selesai', 'ApiController@transaksiSelesai');
+
+Route::get('/api/test', 'ApiController@test');

@@ -103,7 +103,7 @@
                             <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="/admin/assets/images/users/1.jpg" alt="user" class="rounded-circle" width="31"></a>
                             <div class="dropdown-menu dropdown-menu-right user-dd animated">
                                 <a class="dropdown-item" href="/toko/profil/{{Session::get('idToko')}}"><i class="mdi mdi-store m-r-5 m-l-5"></i> Profil Toko</a>
-                                <a class="dropdown-item" href="/toko/gantiPassword"><i class="ti-settings m-r-5 m-l-5"></i> Ganti Password</a>
+                                <a class="dropdown-item" href="/toko/gantiPassword/{{Session::get('idToko')}}"><i class="ti-settings m-r-5 m-l-5"></i> Ganti Password</a>
                                 <a class="dropdown-item" href="/toko/logout"><i class="fa fa-power-off m-r-5 m-l-5"></i> Logout</a>
                             </div>
                         </li>
@@ -165,6 +165,77 @@
             @endif
 
             @yield('content')
+
+            <div class="clearfix"></div>
+
+            <div class="modal fade" id="modalTransaksi" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="smallModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form method="POST" action="/api/transaksi/selesai">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card card-body printableArea">
+                                        <h3 id="data_id_transaksi"></h3>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="pull-left">
+                                                    <address>
+                                                        <h3> &nbsp;<b class="text-danger">{{Session::get('namaToko')}}</b></h3>
+                                                        <p class="text-muted m-l-5" id="data_alamat_toko">
+                                                        </p>
+                                                    </address>
+                                                </div>
+                                                <div class="pull-right text-right">
+                                                    <address>
+                                                        <h3>To,</h3>
+                                                        <h4 class="font-bold"><div id="data_nama_pelanggan"></div></h4>
+                                                        <p id="data_tgl_transaksi"></p>
+                                                    </address>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="table-responsive m-t-40" style="clear: both;">
+                                                    <table class="table table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="text-center">No.</th>
+                                                                <th>Produk</th>
+                                                                <th class="text-right">Kuantitas</th>
+                                                                <th class="text-right">Harga</th>
+                                                                <th class="text-right">Total</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="data_detail">
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="pull-right m-t-30 text-right">
+                                                    <hr>
+                                                    <h3 id="data_total_tagihan"></h3>
+                                                    <hr>
+                                                </div>
+                                                <div class="clearfix"></div>
+                                            </div>
+                                            <input class="form-control" name="id_transaksi" id="id_transaksi" required hidden>
+                                            Diterima :<br>
+                                            Rp.<div class="col-md-6"><input class="form-control" name="diterima" id="diterima"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Bayar</button>
+                            </div>
+                        </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- ============================================================== -->
             <!-- footer -->
             <!-- ============================================================== -->
@@ -185,6 +256,73 @@
     <!-- ============================================================== -->
     @include('/toko/script/scriptToko')
 
+    {{-- @push('script') --}}
+
+    <script type="text/javascript">
+        // Enable pusher logging - don't include this in production
+        Pusher.logToConsole = true;
+
+        var pusher = new Pusher('cc57b7190625d1c6e36f', {
+            cluster: 'ap1',
+            forceTLS: true
+        });
+
+        var channel = pusher.subscribe('harsoft-channel');
+        channel.bind('transaksiproses-event', function(data) {
+
+            console.log(data)
+
+            var panjangdetail = data.detail.length;
+
+            var myModal= $('#modalTransaksi').on('show.bs.modal', function () {
+
+                $('.modal-body #data_id_transaksi').html(`<h3><b>Transaksi</b><span class="pull-right">#${data.id_transaksi}</span></h3>`);
+                $('.modal-body #data_alamat_toko').html(data.alamat_toko);
+                $('.modal-body #data_tgl_transaksi').html(`<b>Tanggal Transaksi : </b>${data.tgl_transaksi}`);
+                $('.modal-body #data_nama_pelanggan').html(data.nama_pelanggan);
+                $('.modal-body #data_total_tagihan').html(`<b>Total : </b>Rp.${data.total_tagihan}`);
+                $('.modal-body #id_transaksi').val(data.id_transaksi);
+
+                var no = 1;
+
+                for(let i=0; i<panjangdetail; i++){
+                    $.ajax({
+                        url: "/toko/ajax-keranjang",
+                        type:"POST",
+                        data : {"_token": "{{ csrf_token() }}",
+                        "id":data.detail[i].id_keranjang},
+                        dataType: "json",
+                        success: function(res){
+                            var html = `
+                                <tr>
+                                    <td class="text-center">${no++}</td>
+                                    <td>${res.nama_produk}</td>
+                                    <td class="text-right">${data.detail[i].kuantitas}</td>
+                                    <td class="text-right">Rp.${data.detail[i].harga_update/data.detail[i].kuantitas}</td>
+                                    <td class="text-right">Rp.${data.detail[i].harga_update}</td>
+                                </tr>
+                            `;
+                            $('.modal-body #data_detail').append(html);
+                        }
+                    });
+                }
+            });
+
+            myModal.modal('show');
+            // setTimeout(function(){
+            //     $('#bunyiBel').empty();
+            //     myModal.modal('hide')
+            // }, 120000);
+
+            // $('#close').on('click', function(){
+            //     $('#bunyiBel').empty();
+            //     myModal.modal('hide')
+            // })
+
+        });
+
+    </script>
+    {{-- @endpush --}}
 </body>
 
 </html>

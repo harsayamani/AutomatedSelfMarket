@@ -10,7 +10,7 @@ class Keranjang extends Model
 
     protected $primaryKey = 'id_keranjang';
 
-    protected $fillable = ['id_produk', 'id_pelanggan', 'kuantitas'];
+    protected $fillable = ['id_produk', 'id_pelanggan', 'kuantitas', 'status', 'harga_update'];
 
     public function pelanggan()
     {

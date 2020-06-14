@@ -51,7 +51,63 @@
                                                 {{-- <div id="detail">
 
                                                 </div> --}}
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="card card-body printableArea">
+                                                            <div  id="data_id_transaksi"></div>
+                                                            <hr>
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <div class="pull-left">
+                                                                        <address>
+                                                                            <h3> &nbsp;<b class="text-danger">{{Session::get('namaToko')}}</b></h3>
+                                                                            <p class="text-muted m-l-5" id="data_alamat_toko">
+                                                                            </p>
+                                                                        </address>
+                                                                    </div>
+                                                                    <div class="pull-right text-right">
+                                                                        <address>
+                                                                            <h3>To,</h3>
+                                                                            <h4 class="font-bold"><div id="data_nama_pelanggan"></div></h4>
+                                                                            <p id="data_tgl_transaksi"></p>
+                                                                        </address>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                    <div class="table-responsive m-t-40" style="clear: both;">
+                                                                        <table class="table table-hover">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th class="text-center">No.</th>
+                                                                                    <th>Produk</th>
+                                                                                    <th class="text-right">Kuantitas</th>
+                                                                                    <th class="text-right">Harga</th>
+                                                                                    <th class="text-right">Total</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody id="data_detail">
 
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                    <div class="pull-right m-t-30 text-right">
+                                                                        <hr>
+                                                                        <h3 id="data_total_tagihan"></h3>
+                                                                        <hr>
+                                                                        <p id="data_diterima"></p>
+                                                                        <p id="data_kembalian"></p>
+                                                                    </div>
+                                                                    <div class="clearfix"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                                                </div>
 
                                             </div>
                                         </div>
@@ -132,6 +188,7 @@
                                                         data-diterima ="{{$trs->diterima}}"
                                                         data-kembalian ="{{$trs->kembalian}}"
                                                         data-alamat_toko ="{{$trs->toko->alamat}}"
+                                                        data-detail="{{App\DetailTransaksi::where('id_transaksi', $trs->id_transaksi)->get()}}"
                                                         >
                                                         <i class="fa fa-info"></i>&nbsp;
                                                             Detail Transaksi
@@ -181,77 +238,44 @@
             var diterima = button.data('diterima');
             var kembalian = button.data('kembalian');
             var alamat_toko = button.data('alamat_toko');
+            var detail = button.data('detail');
 
-            console.log(id_transaksi);
+            // console.log(detail);
+
             var modal = $(this);
-            modal.find('.modal-body').html(`
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card card-body printableArea">
-                            <h3><b>Transaksi</b><span class="pull-right"> #`+id_transaksi+`</span></h3>
-                            <hr>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="pull-left">
-                                        <address>
-                                            <h3> &nbsp;<b class="text-danger">{{Session::get('namaToko')}}</b></h3>
-                                            <p class="text-muted m-l-5">
-                                                `+alamat_toko+`
-                                            </p>
-                                        </address>
-                                    </div>
-                                    <div class="pull-right text-right">
-                                        <address>
-                                            <h3>To,</h3>
-                                            <h4 class="font-bold">`+nama_pelanggan+`</h4>
-                                            <p><b>Tanggal Transaksi : </b>`+waktu_transaksi+`</p>
-                                        </address>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="table-responsive m-t-40" style="clear: both;">
-                                        <table class="table table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th class="text-center">No.</th>
-                                                    <th>Produk</th>
-                                                    <th class="text-right">Kuantitas</th>
-                                                    <th class="text-right">Harga</th>
-                                                    <th class="text-right">Total</th>
-                                                </tr>
-                                            </thead>
-                                            @foreach($detail as $key=>$det)
-                                            <tbody>
-                                                <tr>
-                                                    <td class="text-center">{{++$key}}</td>
-                                                    <td>{{$det->keranjang->produk->nama_produk}}</td>
-                                                    <td class="text-right">{{$det->keranjang->kuantitas}}</td>
-                                                    <td class="text-right">Rp.{{$det->keranjang->produk->harga}}</td>
-                                                    <td class="text-right">Rp.{{$det->keranjang->produk->harga*$det->keranjang->kuantitas}}</td>
-                                                </tr>
-                                            </tbody>
-                                            @endforeach
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="pull-right m-t-30 text-right">
-                                        <hr>
-                                        <h3><b>Total : </b>Rp.`+total_tagihan+`</h3>
-                                        <hr>
-                                        <p>Diterima : Rp.`+diterima+`</p>
-                                        <p>Kembalian : RP.`+kembalian+`</p>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                </div>
-            `);
+            modal.find('.modal-body #data_alamat_toko').html(alamat_toko);
+            modal.find('.modal-body #data_tgl_transaksi').html(`<b>Tanggal Transaksi : </b>${waktu_transaksi}`);
+            modal.find('.modal-body #data_nama_pelanggan').html(nama_pelanggan);
+            modal.find('.modal-body #data_total_tagihan').html(`<b>Total : </b>Rp.${total_tagihan}`);
+            modal.find('.modal-body #data_id_transaksi').html(`<h3><b>Transaksi</b><span class="pull-right">#${id_transaksi}</span></h3>`);
+            modal.find('.modal-body #data_diterima').html(`Diterima : Rp.${diterima}`)
+            modal.find('.modal-body #data_kembalian').html(`Kembalian : Rp.${kembalian}`)
+
+            var no = 1;
+            modal.find('.modal-body #data_detail').empty();
+
+                for(let i=0; i<detail.length; i++){
+                    $.ajax({
+                        url: "/toko/ajax-keranjang",
+                        type:"POST",
+                        data : {"_token": "{{ csrf_token() }}",
+                        "id":detail[i].id_keranjang},
+                        dataType: "json",
+                        success: function(res){
+                            console.log(res.keranjang);
+                            var html = `
+                                <tr>
+                                    <td class="text-center">${no++}</td>
+                                    <td>${res.nama_produk}</td>
+                                    <td class="text-right">${res.keranjang[0].kuantitas}</td>
+                                    <td class="text-right">Rp.${(res.keranjang[0].harga_update)/(res.keranjang[0].kuantitas)}</td>
+                                    <td class="text-right">Rp.${res.keranjang[0].harga_update}</td>
+                                </tr>
+                            `;
+                            modal.find('.modal-body #data_detail').append(html);
+                        }
+                    });
+                }
         });
     });
 </script>
