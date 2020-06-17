@@ -28,7 +28,9 @@ class ProdukController extends Controller
         }else{
             try{
                 $this->validate($request, [
-                    'nama_produk' => '|unique:produk'
+                    'nama_produk' => '|unique:produk',
+                    'stok' => '|numeric|regex:/^([1-9][0-9]+)/',
+                    'harga' => '|numeric|regex:/^([1-9][0-9]+)/'
                 ]);
 
                 $produk = new Produk();

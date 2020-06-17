@@ -248,7 +248,7 @@
                                                 <td>{{$prod->harga}}</td>
                                                 <td>{{$prod->stok}}</td>
                                                 <td>
-                                                    <a href="/toko/produk/qr-code/{{$prod->id_produk}}">
+                                                    <a href="/toko/produk/qr-code/{{$prod->id_produk}}" target="_blank">
                                                         <i class="fa fa-qrcode"></i>&nbsp;
                                                     </a>
                                                 </td>

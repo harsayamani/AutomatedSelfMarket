@@ -150,4 +150,37 @@ class TokoController extends Controller
             'nama_produk' => $nama_produk,
         ], 200);
     }
+
+    public function profilIndex($id_toko){
+        if(!Session::get('loginToko')){
+            return redirect('/toko/login')->with('alert-danger', 'Anda harus login terlebih dahulu!');
+        }else{
+            $toko = Toko::where('id_toko', $id_toko);
+            return view('toko/profilToko', compact('toko'));
+        }
+    }
+
+    public function ubahProfil(Request $request, $id_toko){
+        if(!Session::get('loginToko')){
+            return redirect('/toko/login')->with('alert-danger', 'Anda harus login terlebih dahulu!');
+        }else{
+            $this->validate($request, [
+                'nama_toko' => '|max:50',
+                'nama_pemilik' => '|max:50',
+                'alamat' => '|max:255'
+            ]);
+
+            $profil = Toko::findOrFail($id_toko);
+            $profil->nama_toko = $request->nama_toko;
+            $profil->nama_pemilik = $request->nama_pemilik;
+            $profil->alamat = $request->alamat;
+
+            if($profil->save()){
+                Session::put('namaToko', $request->nama_toko);
+                return redirect('/toko/profil/'.$id_toko.'')->with('alert-success', 'Profil toko sudah diubah!');
+            }else{
+                return redirect('/toko/profil/'.$id_toko.'')->with('alert-danger', 'Terjadi kesalahan!');
+            }
+        }
+    }
 }

@@ -83,6 +83,10 @@ Route::post('/toko/gantiPassword/proses', 'TokoController@gantiPasswordProses');
 
 Route::post('/toko/ajax-keranjang', 'TokoController@ajaxKeranjang');
 
+Route::get('/toko/profil/{id_toko}', 'TokoController@profilIndex');
+
+Route::post('/toko/profil/{id_toko}/ubah', 'TokoController@ubahProfil');
+
 
 //api
 
@@ -103,3 +107,5 @@ Route::post('/api/transaksi/proses', 'ApiController@prosesTransaksi');
 Route::post('/api/transaksi/selesai', 'ApiController@transaksiSelesai');
 
 Route::get('/api/test', 'ApiController@test');
+
+Route::post('/api/detailTransaksi', 'ApiController@detailTransaksi');

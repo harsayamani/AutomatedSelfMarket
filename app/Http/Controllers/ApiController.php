@@ -10,6 +10,7 @@ use App\Produk;
 use App\RiwayatPelanggan;
 use App\Toko;
 use App\Transaksi;
+use Exception;
 use Illuminate\Http\Request;
 
 class ApiController extends Controller
@@ -78,7 +79,7 @@ class ApiController extends Controller
     public function riwayatToko(Request $request){
         $id_pelanggan = $request->id_pelanggan;
 
-        $riwayat = RiwayatPelanggan::where('id_pelanggan', $id_pelanggan)->get();
+        $riwayat = RiwayatPelanggan::where('id_pelanggan', $id_pelanggan)->orderBy('created_at', 'desc')->get();
 
         if($riwayat){
             $toko = Toko::get();
@@ -101,7 +102,7 @@ class ApiController extends Controller
     public function getTransaksi(Request $request){
         $id_pelanggan = $request->id_pelanggan;
 
-        $transaksi = Transaksi::where('id_pelanggan', $id_pelanggan)->get();
+        $transaksi = Transaksi::where('id_pelanggan', $id_pelanggan)->orderBy('created_at', 'desc')->get();
 
         if($transaksi){
             $toko = Toko::get();
@@ -172,35 +173,49 @@ class ApiController extends Controller
             $kembalian = 0;
             $status = 0;
 
-                $transaksi = new Transaksi();
-                $transaksi->id_transaksi = $id_transaksi;
-                $transaksi->total_tagihan = $total_tagihan;
-                $transaksi->diterima = $diterima;
-                $transaksi->kembalian = $kembalian;
-                $transaksi->id_pelanggan = $id_pelanggan;
-                $transaksi->id_toko = $id_toko;
-                $transaksi->status = $status;
-                $transaksi->save();
+            $transaksi = new Transaksi();
+            $transaksi->id_transaksi = $id_transaksi;
+            $transaksi->total_tagihan = $total_tagihan;
+            $transaksi->diterima = $diterima;
+            $transaksi->kembalian = $kembalian;
+            $transaksi->id_pelanggan = $id_pelanggan;
+            $transaksi->id_toko = $id_toko;
+            $transaksi->status = $status;
+            $transaksi->save();
 
-                $keranjang = Keranjang::where('status', 0)->where('id_pelanggan', $id_pelanggan)->get();
+            $keranjang = Keranjang::where('status', 0)->where('id_pelanggan', $id_pelanggan)->get();
 
-                foreach($keranjang as $ker){
+            foreach($keranjang as $ker){
+                $produk = Produk::findOrFail($ker->id_produk);
+
+                if($ker->kuantitas <= $produk->stok){
+                    $produk->stok = $produk->stok - $ker->kuantitas;
+                    $produk->save();
+
                     $detail = new DetailTransaksi();
                     $detail->id_keranjang = $ker->id_keranjang;
                     $detail->id_transaksi = $id_transaksi;
                     $detail->save();
+                }else{
+                    $ker->delete();
+                    return response()->json([
+                        'status_code' => 1,
+                        'message' => "Stok produk ".$produk->nama_produk." kosong!"
+                    ], 200);
+                    break;
                 }
+            }
 
-                $alamat_toko = Toko::where('id_toko', $id_toko)->value('alamat');
-                $nama_pelanggan = Pelanggan::where('id_pelanggan', $id_pelanggan)->value('nama_pelanggan');
-                $tgl_transaksi = Transaksi::where('id_transaksi', $id_transaksi)->value('created_at');
+            $alamat_toko = Toko::where('id_toko', $id_toko)->value('alamat');
+            $nama_pelanggan = Pelanggan::where('id_pelanggan', $id_pelanggan)->value('nama_pelanggan');
+            $tgl_transaksi = Transaksi::where('id_transaksi', $id_transaksi)->value('created_at');
 
-                event(new \App\Events\TransaksiProses($keranjang, $id_transaksi, $alamat_toko, $nama_pelanggan, $total_tagihan, $tgl_transaksi));
+            event(new \App\Events\TransaksiProses($keranjang, $id_transaksi, $alamat_toko, $nama_pelanggan, $total_tagihan, $tgl_transaksi));
 
-                return response()->json([
-                    'status_code' => 0,
-                    'message' => "Transaksi diproses!"
-                ], 200);
+            return response()->json([
+                'status_code' => 0,
+                'message' => "Transaksi diproses!"
+            ], 200);
 
                 // if($ev){
                 //     return response()->json([
@@ -242,6 +257,32 @@ class ApiController extends Controller
         if($transaksi->save()){
             event(new \App\Events\TransaksiSelesai("Transaksi Selesai!"));
             return redirect('/toko/dashboard')->with('alert-success', 'Transaksi Selesai!');
+        }
+    }
+
+    public function detailTransaksi(Request $request){
+        $id_transaksi = $request->id_transaksi;
+
+        $detail = DetailTransaksi::where('id_transaksi', $id_transaksi)->get();
+
+        if($detail){
+            $keranjang = Keranjang::get();
+            $produk = Produk::get();
+            return response()->json([
+                'status_code' => 0,
+                'message' => "Success!",
+                'data_detail' => $detail,
+                'data_keranjang' => $keranjang,
+                'data_produk' => $produk
+            ], 200);
+        }else{
+            return response()->json([
+                'status_code' => 1,
+                'message' => "Fail!",
+                'data_detail' => null,
+                'data_keranjang' => null,
+                'data_produk' => null
+            ], 200);
         }
     }
 
