@@ -17,7 +17,7 @@ class CreateDetailTransaksiTable extends Migration
             $table->bigIncrements('id_detail_transaksi');
             $table->unsignedInteger('id_keranjang');
             $table->foreign('id_keranjang')->references('id_keranjang')->on('keranjang');
-            $table->integer('id_transaksi');
+            $table->unsignedInteger('id_transaksi');
             $table->foreign('id_transaksi')->references('id_transaksi')->on('transaksi');
             $table->timestamps();
         });

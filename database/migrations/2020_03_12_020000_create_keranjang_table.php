@@ -17,11 +17,11 @@ class CreateKeranjangTable extends Migration
             $table->increments('id_keranjang');
             $table->string('id_produk');
             $table->foreign('id_produk')->references('id_produk')->on('produk');
-            $table->integer('kuantitas');
+            $table->unsignedInteger('kuantitas');
             $table->bigInteger('harga_update');
             $table->string('id_pelanggan');
             $table->foreign('id_pelanggan')->references('id_pelanggan')->on('pelanggan');
-            $table->integer('status', 1);
+            $table->unsignedInteger('status', 1);
             $table->timestamps();
         });
     }
