@@ -11,8 +11,12 @@
 |
 */
 
+Route::get('/', function () {
+    return redirect('/toko/login');
+});
+
 Route::get('/admin', function () {
-    return redirect('/admin/login');
+    return redirect('/toko/login');
 });
 
 Route::get('/admin/login', 'AdminController@loginIndex');
